@@ -1,38 +1,5 @@
-#!/usr/bin/python3
-
-import cmd
 import csv
-
-class MSS(cmd.Cmd):
-    """
-    Command Interpreter for the Module and Student System (MSS)
-    """
-    prompt = '(MSS) '
-
-    def do_quit(self, line):
-        """Quit command to exit the program
-
-        """
-        return True
-
-    def emptyline(self):
-        """Do nothing when an empty line is entered"""
-        pass
-
-    def do_EOF(self, line):
-        """
-        Handle end of file
-        """
-        print()
-        return True
-
-# Dataset containing usernames and passwords
-user_data = {
-        'student1': 'password1',
-        'student2': 'password2',
-        'lecturer1': 'password3',
-        'lecturer2': 'password4'
-        }
+import inquirer
 
 def welcome():
     print("Welcome to the Module and Student System (MSS)")
@@ -74,6 +41,20 @@ def main():
         if success:
             print("Login successful!")
             print(data)
+            questions = [
+                    inquirer.List('option',
+                        message="Select from the menu below:",
+                        choices=['1. View user profile', '2. View all modules', '3. Change password', '4. Exit'],
+                        carousel=True
+                        ),
+                    ]
+            answer = inquirer.prompt(questions)
+            selected_option = int(answer['option'][0])
+
+            if selected_option == 1:
+                print(selected_option)
+            elif selected_option == 4:
+                break # Exit the inner loop and return to login page
             break
         else:
             print(data["message"])
