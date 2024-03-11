@@ -52,10 +52,7 @@ def view_user_profile(user):
             ]
     answer = inquirer.prompt(questions)
     selected_option = int(answer['option'][0])
-
-    if selected_option == 1:
-        new_choice = select_menu()
-        print(new_choice)
+    return selected_option
 
 def select_menu():
     questions = [
@@ -78,13 +75,16 @@ def main():
         if success:
             print("Login successful!")
             print(data)
-            answer = select_menu()
-            selected_option = int(answer['option'][0])
+            while True:
+                answer = select_menu()
+                selected_option = int(answer['option'][0])
 
-            if selected_option == 1:
-                view_user_profile(data)
-            elif selected_option == 4:
-                break # Exit the inner loop and return to login page
+                if selected_option == 1:
+                    choice = view_user_profile(data)
+                    if choice == 1:
+                        continue
+                elif selected_option == 4:
+                    break # Exit the inner loop and return to login page
             break
         else:
             print(data["message"])
