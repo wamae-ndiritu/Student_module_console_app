@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import cmd
+import csv
 
 class MSS(cmd.Cmd):
     """
@@ -42,21 +43,40 @@ def login():
     return username, password
 
 def authenticate(username, password):
-    if username in user_data and user_data[username] == password:
-        return True
-    else:
-        return False
+    """
+    Authenticates the username/password passed by the user.
+    Return:
+        An empty dict {}, if invalid credentials
+        Or a dict with user info.
+    """
+    with open('./Datasets/User.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        error = {}
+        user = {}
+        for row in reader:
+            if row['UserName'] == username:
+                user = row
+        if user:
+            if user['Password'] == password:
+                return user, True
+            else:
+                error['message'] = "Invalid password!"
+        else:
+            error['message'] = "Invalid username!"
+        return error, False
 
 def main():
     welcome()
     attempts = 0
     while attempts < 3:
         username, password = login()
-        if authenticate(username, password):
+        data, success = authenticate(username, password)
+        if success:
             print("Login successful!")
+            print(data)
             break
         else:
-            print("Invalid username or password. Please try again.")
+            print(data["message"])
             attempts += 1
     else:
         print("You've exceeded the maximum number of login attempts. Your account is blocked.")
