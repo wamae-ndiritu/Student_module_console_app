@@ -54,6 +54,12 @@ def view_user_profile(user):
     selected_option = int(answer['option'][0])
     return selected_option
 
+def view_modules():
+    print("Displaying all modules...")
+
+def change_password():
+    print("Changing password...")
+
 def select_menu():
     questions = [
             inquirer.List('option',
@@ -74,7 +80,6 @@ def main():
         data, success = authenticate(username, password)
         if success:
             print("Login successful!")
-            print(data)
             while True:
                 answer = select_menu()
                 selected_option = int(answer['option'][0])
@@ -83,6 +88,10 @@ def main():
                     choice = view_user_profile(data)
                     if choice == 1:
                         continue
+                elif selected_option == 2:
+                    view_modules()
+                elif selected_option == 3:
+                    change_password()
                 elif selected_option == 4:
                     break # Exit the inner loop and return to login page
             break
