@@ -2,7 +2,6 @@
 
 import csv
 import inquirer
-import subprocess
 
 def welcome():
     print("Welcome to the Module and Student System (MSS)")
@@ -35,41 +34,42 @@ def authenticate(username, password):
             error['message'] = "Invalid username!"
         return error, False
 
-import tkinter as tk
-
 def view_user_profile(user):
-    profile_window = tk.Toplevel(root)
-    profile_window.title("User Profile")
-
-    # Display user profile
-    profile_frame = tk.Frame(profile_window, padx=20, pady=20)
-    profile_frame.pack()
-
-    tk.Label(profile_frame, text="User Profile", font=("Helvetica", 16, "bold")).grid(row=0, columnspan=2)
-
-    user_info = [
-            ("Username:", user['UserName']),
-            ("First Name:", user['First Name']),
-            ("Surname:", user['Surname']),
-            ("User Type:", user['UserType']),
-            ("Login Status:", user['LoginStatus'])
+    print("User Profile:")
+    print("─────────────────────────────────────")
+    print(f"Username:     {user['UserName']}")
+    print(f"First Name:   {user['First Name']}")
+    print(f"Surname:      {user['Surname']}")
+    print(f"User Type:    {user['UserType']}")
+    print(f"Login Status: {user['LoginStatus']}")
+    print("─────────────────────────────────────")
+    questions = [
+            inquirer.List('option',
+                message="Go Back to main menu:",
+                choices=['1. Main menu'],
+                carousel=True
+                ),
             ]
+    answer = inquirer.prompt(questions)
+    selected_option = int(answer['option'][0])
 
-    for i, (label, value) in enumerate(user_info, start=1):
-        tk.Label(profile_frame, text=label).grid(row=i, column=0, sticky="e")
-        tk.Label(profile_frame, text=value).grid(row=i, column=1, sticky="w")
+    if selected_option == 1:
+        new_choice = select_menu()
+        print(new_choice)
 
-    tk.Button(profile_frame, text="Close", command=profile_window.destroy).grid(row=i+1, columnspan=2)
+def select_menu():
+    questions = [
+            inquirer.List('option',
+                message="Select from the menu below:",
+                choices=['1. View user profile', '2. View all modules', '3. Change password', '4. Exit'],
+                carousel=True
+                ),
+            ]
+    answer = inquirer.prompt(questions)
+    return answer
+
 
 def main():
-    root = tk.Tk()
-    root.title("Main Page")
-
-    # Main page widgets
-    tk.Label(root, text="Main Page", font=("Helvetica", 16, "bold")).pack()
-    tk.Button(root, text="View User Profile", command=lambda: view_user_profile(user_data)).pack()
-
-    root.mainloop()
     welcome()
     attempts = 0
     while attempts < 3:
@@ -78,14 +78,7 @@ def main():
         if success:
             print("Login successful!")
             print(data)
-            questions = [
-                    inquirer.List('option',
-                        message="Select from the menu below:",
-                        choices=['1. View user profile', '2. View all modules', '3. Change password', '4. Exit'],
-                        carousel=True
-                        ),
-                    ]
-            answer = inquirer.prompt(questions)
+            answer = select_menu()
             selected_option = int(answer['option'][0])
 
             if selected_option == 1:
