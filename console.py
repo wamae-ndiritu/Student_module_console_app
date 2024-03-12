@@ -43,33 +43,47 @@ def view_user_profile(user):
     print(f"User Type:    {user['UserType']}")
     print(f"Login Status: {user['LoginStatus']}")
     print("─────────────────────────────────────")
-    questions = [
-            inquirer.List('option',
-                message="Go Back to main menu:",
-                choices=['1. Main menu'],
-                carousel=True
-                ),
-            ]
-    answer = inquirer.prompt(questions)
-    selected_option = int(answer['option'][0])
+    selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
 
+from prettytable import PrettyTable
+
 def view_modules():
-    print("Displaying all modules...")
+    with open('Datasets/Module.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
 
-def change_password():
-    print("Changing password...")
+        # Create a pretty table
+        table = PrettyTable()
+        table.field_names = ["ModuleID", "ModuleName"]
 
-def select_menu():
+        # Add rows from the CSV
+        for row in reader:
+            table.add_row([row['ModuleID'], row['ModuleName']])
+
+        # Print the table
+        print(table)
+    selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
+    return selected_option
+
+
+def select_menu_options(message="", choices=[]):
+    """
+    Displays menu options and handles the selection of option
+    Args:
+        message (str): The title message for the select menu
+        choices (list): List of menu options
+    Return:
+        int: Returns an int representing the selected option.
+    """
     questions = [
             inquirer.List('option',
-                message="Select from the menu below:",
-                choices=['1. View user profile', '2. View all modules', '3. Change password', '4. Exit'],
+                message=message,
+                choices=choices,
                 carousel=True
                 ),
             ]
     answer = inquirer.prompt(questions)
-    return answer
+    return int(answer['option'][0])
 
 
 def main():
@@ -81,15 +95,24 @@ def main():
         if success:
             print("Login successful!")
             while True:
-                answer = select_menu()
-                selected_option = int(answer['option'][0])
+                selected_option = select_menu_options(
+                        "Select from the menu below", 
+                        [
+                            '1. View user profile',
+                            '2. View all modules',
+                            '3. Change password',
+                            '4. Exit'
+                        ]
+                    )
 
                 if selected_option == 1:
-                    choice = view_user_profile(data)
-                    if choice == 1:
+                    exit_option = view_user_profile(data)
+                    if exit_option == 1:
                         continue
                 elif selected_option == 2:
-                    view_modules()
+                    exit_option = view_modules()
+                    if exit_option == 1:
+                        continue
                 elif selected_option == 3:
                     change_password()
                 elif selected_option == 4:
