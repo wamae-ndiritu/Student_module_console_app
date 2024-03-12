@@ -131,10 +131,58 @@ def register_module(username):
                 writer.writerows(user_modules)
             print(f"You have successfully registered to {answer['module']}!")
         except:
-            print("An error occurred during module registration!")
+            print(f"An error occurred trying to regster {answer['module']}!")
 
     selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
+
+def withdraw_module(username):
+    registered_modules_codes = []
+    registered_modules = []
+    modules = []
+    with open('Datasets/UserModule.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        modules = list(reader)
+        for row in modules:
+            if row['UserName'] == username:
+                registered_modules_codes.append(row['ModuleID'])
+
+    with open('Datasets/Module.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        course_modules = list(reader)
+        for row in course_modules:
+            if row['ModuleID'] in registered_modules_codes:
+                registered_modules.append(row)
+    questions = [
+            inquirer.List('module',
+                message="Select Module to withdraw from",
+                choices=[f"{module['ModuleID']} {module['ModuleName']}" for module in registered_modules],
+                carousel=True
+                ),
+            ]
+    answer = inquirer.prompt(questions)
+    moduleId = answer['module'].split(' ')[0]
+
+    new_modules = []
+    for row in modules:
+        if row['UserName'] != username and row['ModuleID'] != moduleId:
+            new_modules.append(row)
+
+    # Write the updated data back to the CSV file
+    try:
+        with open('Datasets/UserModule.csv', 'w', newline='') as csvfile:
+            fieldnames = ['UserName', 'ModuleID']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(new_modules)
+        print(f"You have successfully withdrawn from {answer['module']}!")
+    except:
+        print(f"An error occurred trying to withdraw {answer['module']}!")
+
+    selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
+    return selected_option
+
+
 
 import getpass
 
@@ -207,6 +255,7 @@ def main():
             print("Login successful!")
             while True:
                 choice_list = []
+                print(data)
                 if data['UserType'] == 'Student':
                     choice_list = [
                             '1. View user profile',
@@ -228,9 +277,9 @@ def main():
                             '9. Exit'
                             ]
                 selected_option = select_menu_options(
-                        "Select from the menu below",
-                        choice_list
-                        )
+                            "Select from the menu below",
+                            choice_list
+                            )
 
                 if selected_option == 1:
                     exit_option = view_user_profile(data)
@@ -250,6 +299,10 @@ def main():
                         continue
                 elif selected_option == 5:
                     exit_option = register_module(data['UserName'])
+                    if exit_option == 1:
+                        continue
+                elif selected_option == 6:
+                    exit_option = withdraw_module(data['UserName'])
                     if exit_option == 1:
                         continue
                 elif selected_option == 9:
