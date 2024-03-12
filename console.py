@@ -18,7 +18,7 @@ def authenticate(username, password):
         An empty dict {}, if invalid credentials
         Or a dict with user info.
     """
-    with open('./Datasets/User.csv', newline='') as csvfile:
+    with open('Datasets/User.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         error = {}
         user = {}
@@ -205,14 +205,30 @@ def main():
         if success:
             print("Login successful!")
             while True:
-                selected_option = select_menu_options(
-                        "Select from the menu below", 
-                        [
+                choice_list = []
+                if data['UserType'] == 'Student':
+                    choice_list = [
                             '1. View user profile',
                             '2. View all modules',
                             '3. Change password',
-                            '4. Exit'
+                            '4. View my modules',
+                            '5. Register a module',
+                            '6. Withdraw from a module',
+                            '9. Exit'
                             ]
+                elif data['UserType'] == 'Lecturer':
+                    choice_list = [
+                            '1. View user profile',
+                            '2. View all modules',
+                            '3. Change password',
+                            '4. View my modules',
+                            '7. Create a module',
+                            '8. Update student records',
+                            '9. Exit'
+                            ]
+                selected_option = select_menu_options(
+                        "Select from the menu below",
+                        choice_list
                         )
 
                 if selected_option == 1:
@@ -220,7 +236,7 @@ def main():
                     if exit_option == 1:
                         continue
                 elif selected_option == 2:
-                    exit_option = register_module(data['UserName'])
+                    exit_option = view_modules()
                     if exit_option == 1:
                         continue
                 elif selected_option == 3:
@@ -228,7 +244,18 @@ def main():
                     if exit_option == 1:
                         continue
                 elif selected_option == 4:
+                    exit_option = view_user_modules(data['UserName'])
+                    if exit_option == 1:
+                        continue
+                elif selected_option == 5:
+                    exit_option = register_module(data['UserName'])
+                    if exit_option == 1:
+                        continue
+                elif selected_option == 9:
                     break # Exit the inner loop and return to login page
+                else:
+                    print(selected_option)
+                    break
             break
         else:
             print(data["message"])
