@@ -35,7 +35,7 @@ def authenticate(username, password):
         return error, False
 
 def view_user_profile(user):
-    print("User Profile:")
+    print("My Profile")
     print("─────────────────────────────────────")
     print(f"Username:     {user['UserName']}")
     print(f"First Name:   {user['First Name']}")
@@ -61,10 +61,51 @@ def view_modules():
             table.add_row([row['ModuleID'], row['ModuleName']])
 
         # Print the table
+        print("ALL REGISTERED MODULES")
         print(table)
     selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
 
+import getpass
+
+def change_password(username):
+    # Read the CSV file and load its contents into memory
+    with open('Datasets/User.csv', 'r', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        data = list(reader)
+
+    # Find the user record based on the provided username
+    user_found = False
+    for user in data:
+        if user['UserName'] == username:
+            user_found = True
+            break
+
+    if not user_found:
+        print(f"User '{username}' not found.")
+        return False
+
+    # Prompt the user to enter the new password and confirm it
+    while True:
+        new_password = getpass.getpass("Enter new password: ")
+        confirm_password = getpass.getpass("Confirm new password: ")
+
+        if new_password != confirm_password:
+            print("Passwords do not match. Please try again.")
+        else:
+            user['Password'] = new_password
+            break
+
+    # Write the updated data back to the CSV file
+    with open('Datasets/User.csv', 'w', newline='') as csvfile:
+        fieldnames = ['UserName', 'Password', 'First Name', 'Surname', 'UserType', 'LoginStatus']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+
+    print("Your password has been reset successfully!")
+    selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
+    return selected_option
 
 def select_menu_options(message="", choices=[]):
     """
@@ -102,8 +143,8 @@ def main():
                             '2. View all modules',
                             '3. Change password',
                             '4. Exit'
-                        ]
-                    )
+                            ]
+                        )
 
                 if selected_option == 1:
                     exit_option = view_user_profile(data)
@@ -114,7 +155,9 @@ def main():
                     if exit_option == 1:
                         continue
                 elif selected_option == 3:
-                    change_password()
+                    exit_option = change_password(data['UserName'])
+                    if exit_option == 1:
+                        continue
                 elif selected_option == 4:
                     break # Exit the inner loop and return to login page
             break
