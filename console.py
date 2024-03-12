@@ -96,7 +96,7 @@ def register_module(username):
     with open('Datasets/UserModule.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         user_modules = list(reader)
-        for row in reader:
+        for row in user_modules:
             if row['UserName'] == username:
                 registered_modules_list.append(row['ModuleID'])
 
