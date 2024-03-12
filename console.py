@@ -66,6 +66,57 @@ def view_modules():
     selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
 
+def view_user_modules(username):
+    modules_list = []
+    with open('Datasets/UserModule.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row['UserName'] == username:
+                modules_list.append(row['ModuleID'])
+    with open('Datasets/Module.csv', newline='') as csvfile:
+        user_modules = []
+        reader = csv.DictReader(csvfile)
+        user_modules_table = PrettyTable()
+        user_modules_table.field_names = ["ModuleID", "ModuleName"]
+
+        for row in reader:
+            if row['ModuleID'] in modules_list:
+                user_modules_table.add_row([row['ModuleID'], row['ModuleName']])
+
+        # Print user modules
+        print("CURRENTLY ENROLLED MODULES")
+        print(user_modules_table)
+
+    selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
+    return selected_option
+
+def register_module(username):
+    modules_list = []
+    with open('Datasets/UserModule.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row['UserName'] == username:
+                modules_list.append(row['ModuleID'])
+
+    modules = []
+    with open('Datasets/Module.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            modules.append(row)
+
+    print(modules)
+
+    questions = [
+            inquirer.List('module',
+                message="Select Module to register",
+                choices=["101", "103"],
+                carousel=True
+                ),
+            ]
+    answer = inquirer.prompt(questions)
+    return int(answer['module'][0])
+
+
 import getpass
 
 def change_password(username):
@@ -151,7 +202,7 @@ def main():
                     if exit_option == 1:
                         continue
                 elif selected_option == 2:
-                    exit_option = view_modules()
+                    exit_option = register_module(data['UserName'])
                     if exit_option == 1:
                         continue
                 elif selected_option == 3:
