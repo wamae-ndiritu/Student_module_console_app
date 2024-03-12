@@ -132,8 +132,9 @@ def register_module(username):
             print(f"You have successfully registered to {answer['module']}!")
         except:
             print("An error occurred during module registration!")
-    return int(answer['module'][0])
 
+    selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
+    return selected_option
 
 import getpass
 
@@ -252,7 +253,7 @@ def main():
                     if exit_option == 1:
                         continue
                 elif selected_option == 9:
-                    break # Exit the inner loop and return to login page
+                    break # Exit the inner loop
                 else:
                     print(selected_option)
                     break

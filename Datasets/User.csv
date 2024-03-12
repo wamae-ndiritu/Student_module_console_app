@@ -1,6 +1,6 @@
 UserName,Password,First Name,Surname,UserType,LoginStatus
 ZaiJil,Tree,Zairul,Jilani,Lecturer,Active
-RizRash,Sky,Rizwana,Rashad,Student,Active
+RizRash,1234,Rizwana,Rashad,Student,Active
 JunHue,Grass,Jung,Hue,Student,Active
 BenSmi,Smile,Ben,Smith,Lecturer,Active
 SarKha,King,Sarah,Khan,Student,Active
