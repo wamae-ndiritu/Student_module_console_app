@@ -91,29 +91,47 @@ def view_user_modules(username):
     return selected_option
 
 def register_module(username):
-    modules_list = []
+    registered_modules_list = []
+    user_modules = []
     with open('Datasets/UserModule.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
+        user_modules = list(reader)
         for row in reader:
             if row['UserName'] == username:
-                modules_list.append(row['ModuleID'])
+                registered_modules_list.append(row['ModuleID'])
 
     modules = []
     with open('Datasets/Module.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:
-            modules.append(row)
-
-    print(modules)
+        modules = list(reader)
 
     questions = [
             inquirer.List('module',
                 message="Select Module to register",
-                choices=["101", "103"],
+                choices=[f"{module['ModuleID']} {module['ModuleName']}" for module in modules],
                 carousel=True
                 ),
             ]
     answer = inquirer.prompt(questions)
+    moduleId = answer['module'].split(' ')[0]
+    if moduleId in registered_modules_list:
+        print(f"Module with the code {moduleId} is already registered!")
+    else:
+        new_user_module = {
+                'UserName': username,
+                'ModuleID': moduleId
+                }
+        user_modules.append(new_user_module)
+        # Write the updated data back to the CSV file
+        try:
+            with open('Datasets/User.csv', 'w', newline='') as csvfile:
+                fieldnames = ['UserName', 'ModuleID']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(user_modules)
+            print(f"You have successfully registered to {answer['module']}!")
+        except:
+            print("An error occurred during module registration!")
     return int(answer['module'][0])
 
 
