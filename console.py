@@ -124,7 +124,7 @@ def register_module(username):
         user_modules.append(new_user_module)
         # Write the updated data back to the CSV file
         try:
-            with open('Datasets/User.csv', 'w', newline='') as csvfile:
+            with open('Datasets/UserModule.csv', 'w', newline='') as csvfile:
                 fieldnames = ['UserName', 'ModuleID']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
