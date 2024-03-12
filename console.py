@@ -165,8 +165,11 @@ def withdraw_module(username):
 
     new_modules = []
     for row in modules:
-        if row['UserName'] != username and row['ModuleID'] != moduleId:
+        if row['UserName'] != username:
             new_modules.append(row)
+        else:
+            if row['ModuleID'] != moduleId:
+                new_modules.append(row)
 
     # Write the updated data back to the CSV file
     try:
@@ -255,7 +258,6 @@ def main():
             print("Login successful!")
             while True:
                 choice_list = []
-                print(data)
                 if data['UserType'] == 'Student':
                     choice_list = [
                             '1. View user profile',
