@@ -25,14 +25,19 @@ def authenticate(username, password):
         for row in reader:
             if row['UserName'] == username:
                 user = row
+        isBlocked = False
         if user:
             if user['Password'] == password:
-                return user, True
+                if user['LoginStatus'] == 'Blocked':
+                    error['message'] = "Your account is blocked, You can't login!"
+                    isBlocked = True
+                elif user['LoginStatus'] == 'Active':
+                    return user, True, isBlocked
             else:
                 error['message'] = "Invalid password!"
         else:
             error['message'] = "Invalid username!"
-        return error, False
+        return error, False, isBlocked
 
 def view_user_profile(user):
     print("My Profile")
@@ -348,7 +353,7 @@ def main():
     attempts = 0
     while attempts < 3:
         username, password = login()
-        data, success = authenticate(username, password)
+        data, success, isBlocked = authenticate(username, password)
         if success:
             print("Login successful!")
             while True:
@@ -414,6 +419,8 @@ def main():
             break
         else:
             print(data["message"])
+            if isBlocked:
+                break
             attempts += 1
     else:
         print("You've exceeded the maximum number of login attempts. Your account is blocked.")
