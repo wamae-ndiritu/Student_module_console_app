@@ -268,6 +268,8 @@ def update_student_record():
                 selected_option = select_menu_options("Block/Unblock student", choices)
                 if selected_option == 0:
                     continue # End the loop
+                elif selected_option == 1:
+                    user_to_update['LoginStatus'] = 'Active'
             elif selected_option == 4:
                 for user in users:
                     if user['UserName'] == user_to_update['UserName']:
