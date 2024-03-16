@@ -72,6 +72,14 @@ def view_modules():
     selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
 
+def show_logged_user(userInfo):
+    # Create a pretty table
+    table = PrettyTable()
+    table.field_names = ["Full Name", "User Type"]
+    fullName = f"{userInfo['First Name']} {userInfo['Surname']}"
+    table.add_row([fullName, userInfo['UserType']])
+    print(table)
+
 def view_user_modules(username):
     modules_list = []
     with open('Datasets/UserModule.csv', newline='') as csvfile:
@@ -383,7 +391,7 @@ def main():
         data, success, isBlocked = authenticate(username, password)
         userData = username
         if success:
-            print("Login successful!")
+            show_logged_user(data)
             while True:
                 choice_list = []
                 if data['UserType'] == 'Student':
