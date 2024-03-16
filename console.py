@@ -31,6 +31,7 @@ def authenticate(username, password):
                 if user['LoginStatus'] == 'Blocked':
                     error['message'] = "Your account is blocked, You can't login!"
                     isBlocked = True
+                    return user, False, isBlocked
                 elif user['LoginStatus'] == 'Active':
                     return user, True, isBlocked
             else:
@@ -348,12 +349,37 @@ def select_menu_options(message="", choices=[]):
     return int(answer['option'][0])
 
 
+def block_user(username):
+    """
+    Handle Blocking user
+    """
+    users = []
+    userFound = False
+    with open('Datasets/User.csv', 'r', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        users = list(reader)
+
+        for user in users:
+            if user['UserName'] == username:
+                userFound = True
+                user['LoginStatus'] = 'Blocked'
+    
+    if userFound:
+        with open('Datasets/User.csv', 'w', newline='') as csvfile:
+            fieldnames = ['UserName', 'Password', 'First Name', 'Surname', 'UserType', 'LoginStatus']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(users)
+
+
 def main():
     welcome()
     attempts = 0
+    userData = None
     while attempts < 3:
         username, password = login()
         data, success, isBlocked = authenticate(username, password)
+        userData = username
         if success:
             print("Login successful!")
             while True:
@@ -418,12 +444,15 @@ def main():
                     break
             break
         else:
-            print(data["message"])
             if isBlocked:
+                print("Your account is blocked, You can't login!")
                 break
+            print(data["message"])
             attempts += 1
     else:
-        print("You've exceeded the maximum number of login attempts. Your account is blocked.")
+        if userData:
+            block_user(userData)
+            print("You've exceeded the maximum number of login attempts. Your account is blocked.")
 
 if __name__ == "__main__":
     try:
