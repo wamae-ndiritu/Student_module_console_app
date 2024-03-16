@@ -185,7 +185,46 @@ def withdraw_module(username):
     selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
 
+def create_module():
+    """
+    Create a new Course Module by adding the ModuleID
+    and ModuleName in the Module.csv
+    """
+    print("Create a new module")
+    course_code = input("Enter the course code: ")
+    course_name = input("Enter the course name: ")
+    modules = []
 
+    with open('Datasets/Module.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        modules = list(reader)
+        module_exist = False
+        for module in modules:
+            if module['ModuleID'] == course_code or module['ModuleName'] == course_name:
+                module_exist = True
+            else:
+                module_exist = False
+
+        if module_exist:
+            print("A module with that ModuleID or ModuleName already exists!")
+            return
+        else:
+            new_course = {
+                    "ModuleID": course_code,
+                    "ModuleName": course_name
+                    }
+            modules.append(new_course)
+
+    # Write the updated data back to the CSV file
+    try:
+        with open('Datasets/Module.csv', 'w', newline='') as csvfile:
+            fieldnames = ['ModuleID', 'ModuleName']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(modules)
+            print(f"Module created successfully!")
+    except:
+        print(f"An error occurred trying to create module!")
 
 import getpass
 
@@ -278,11 +317,11 @@ def main():
                             '8. Update student records',
                             '9. Exit'
                             ]
-                selected_option = select_menu_options(
+                    selected_option = select_menu_options(
                             "Select from the menu below",
                             choice_list
                             )
-
+                
                 if selected_option == 1:
                     exit_option = view_user_profile(data)
                     if exit_option == 1:
@@ -307,6 +346,8 @@ def main():
                     exit_option = withdraw_module(data['UserName'])
                     if exit_option == 1:
                         continue
+                elif selected_option == 7:
+                    create_module()
                 elif selected_option == 9:
                     break # Exit the inner loop
                 else:
