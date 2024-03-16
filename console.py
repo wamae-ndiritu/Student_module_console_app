@@ -226,10 +226,66 @@ def create_module():
     except:
         print(f"An error occurred trying to create module!")
 
+def update_student_record():
+    """
+    Updates Student record field by field
+    """
+    print("Update Students Record")
+    student_name = input("Enter student's UserName: ")
+    student_name = student_name.strip()
+    users = []
+    user_to_update = None
+    with open('Datasets/User.csv', 'r', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        users = list(reader)
+
+        for user in users:
+            if user['UserName'] == student_name and user['UserType'] == 'Student':
+                user_to_update = user
+
+    if user_to_update:
+        # Update user
+        while True:
+            selected_option = select_menu_options("Choose what to update", 
+                    ['1. First Name', '2. Surname', '3. LoginStatus', '4. Save and Exit'])
+            if selected_option == 1:
+                new_first_name = input("Enter New First Name: ")
+                user_to_update['First Name'] = new_first_name.strip()
+            elif selected_option == 2:
+                new_surname = input("Enter New Surname: ")
+                user_to_update['Surname'] = new_surname.strip()
+            elif selected_option == 3:
+                loginStatus = user_to_update['LoginStatus']
+                choices = ['0. Go Back']
+                if loginStatus == 'Blocked':
+                    choices.append('1. Unblock Student')
+                selected_option = select_menu_options("Block/Unblock student", choices)
+                if selected_option == 0:
+                    continue # End the loop
+            elif selected_option == 4:
+                for user in users:
+                    if user['UserName'] == user_to_update['UserName']:
+                        user = user_to_update
+                try:
+                    with open('Datasets/User.csv', 'w', newline='') as csvfile:
+                        fieldnames = ['UserName', 'Password', 'First Name', 'Surname', 'UserType', 'LoginStatus']
+                        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                        writer.writeheader()
+                        writer.writerows(users)
+                        print("Student records updated successfully!")
+                        break
+                except:
+                    print("An error occured updating record!")
+                    break
+    else:
+        print("No student found with that UserName!")
+        return
+
 import getpass
 
 def change_password(username):
     # Read the CSV file and load its contents into memory
+    data = []
     with open('Datasets/User.csv', 'r', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         data = list(reader)
@@ -348,6 +404,8 @@ def main():
                         continue
                 elif selected_option == 7:
                     create_module()
+                elif selected_option == 8:
+                    update_student_record()
                 elif selected_option == 9:
                     break # Exit the inner loop
                 else:
