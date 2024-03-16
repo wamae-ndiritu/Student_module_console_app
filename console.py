@@ -200,7 +200,7 @@ def create_module():
         modules = list(reader)
         module_exist = False
         for module in modules:
-            if module['ModuleID'] == course_code or module['ModuleName'] == course_name:
+            if module['ModuleID'] == course_code.strip() or module['ModuleName'] == course_name.strip():
                 module_exist = True
             else:
                 module_exist = False
@@ -210,8 +210,8 @@ def create_module():
             return
         else:
             new_course = {
-                    "ModuleID": course_code,
-                    "ModuleName": course_name
+                    "ModuleID": course_code.strip(),
+                    "ModuleName": course_name.strip()
                     }
             modules.append(new_course)
 
