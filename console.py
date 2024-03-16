@@ -41,14 +41,16 @@ def authenticate(username, password):
         return error, False, isBlocked
 
 def view_user_profile(user):
-    print("My Profile")
-    print("─────────────────────────────────────")
-    print(f"Username:     {user['UserName']}")
-    print(f"First Name:   {user['First Name']}")
-    print(f"Surname:      {user['Surname']}")
-    print(f"User Type:    {user['UserType']}")
-    print(f"Login Status: {user['LoginStatus']}")
-    print("─────────────────────────────────────")
+    """
+    Displays the profile info of the logged in user.
+    """
+    table = PrettyTable()
+    table.field_names = ["Attribue", "Value"]
+    for key, value in user.items():
+        if key != 'Password':
+            table.add_row([key, value])
+    print("MY PROFILE")
+    print(table)
     selected_option = select_menu_options("Go Back to main menu", ['1. Main menu'])
     return selected_option
 
