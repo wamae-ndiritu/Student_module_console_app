@@ -61,3 +61,43 @@ python console.py
 | [Datasets/Module.csv](./Datasets/Module.csv)         | CSV file containing modules data                   |
 | [Datasets/UserModule.csv](./Datasets/UserModule.csv) | CSV file containing users modules data             |
 
+
+## Unit Testing
+As a part of the assignment task, we were required to pick one function in the above Console application and use it to write a well documented test for 5 test cases
+
+### create_module Function
+
+The `create_module` function is responsible for creating a new row in the Module.csv file, representing a new module.
+
+| Test Case                | Description                               | Expected Output                                        |
+|--------------------------|-------------------------------------------|--------------------------------------------------------|
+| Valid Input              | Inputting a new course code and name      | "Module created successfully!"                        |
+|                          | that do not already exist in the dataset  |                                                        |
+| Duplicate Course Code    | Inputting a course code that already      | "A module with that ModuleID or ModuleName already     |
+|                          | exists in the dataset                      | exists!"                                               |
+| Duplicate Course Name    | Inputting a course name that already      | "A module with that ModuleID or ModuleName already     |
+|                          | exists in the dataset                      | exists!"                                               |
+| Empty Course Code        | Inputting an empty course code            | "Course code cannot be empty. Module creation failed." |
+| Empty Course Name        | Inputting an empty course name            | "Course name cannot be empty. Module creation failed." |
+
+
+## Encryption
+Additionally, we were to demostrate how user data can be encrypted before storing them.
+
+### Simple Console Application for Encrypting Passwords
+
+This Python program is a console application designed to encrypt passwords using the Vigenère Cipher. It prompts the user to input their first name, last name, username, and password, then encrypts the password using the Vigenère Cipher and stores the encrypted user data in a CSV file named "user_encrypted.csv".
+
+Follow the prompts to input user data:
+- First name
+- Last name
+- Username
+- Password
+
+After providing the required information, the program will encrypt the password using the Vigenère Cipher and store the encrypted data in a CSV file named "user_encrypted.csv" in the same directory.
+
+### File Structure
+
+- [`vigenere_cipher_encryption.py`](./vigenere_cipher_encryption.py): Python script containing the console application for encrypting passwords.
+- [`user_encrypted.csv`](./user_encrypted.csv): CSV file to store the encrypted user data.
+
