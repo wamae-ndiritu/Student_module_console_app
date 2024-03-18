@@ -1,5 +1,5 @@
 UserName,Password,First Name,Surname,UserType,LoginStatus
-ZaiJil,12345678,Zairul,Jilani,Lecturer,Active
+ZaiJil,1234,Zairul,Jilani,Lecturer,Active
 RizRash,12345678,Wamae1,Wamae,Student,Active
 JunHue,1234,Jung,Hue,Student,Active
 BenSmi,Smile,Ben,Smith,Lecturer,Active

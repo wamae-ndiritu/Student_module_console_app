@@ -9,29 +9,28 @@ def create_module():
     Creates a new row in the Module.csv file
     """
     print("Create a new module")
-    course_code = input("Enter the course code: ")
-    course_name = input("Enter the course name: ")
+    course_code = input("Enter the course code: ").strip()
+    course_name = input("Enter the course name: ").strip()
+
+    # Check for empty course code
+    if not course_code or not course_name:
+        print("Course code or name cannot be empty. Module creation failed.")
+        return True
+
     modules = []
 
     with open('Datasets/Module.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         modules = list(reader)
-        module_exist = False
-        for module in modules:
-            if module['ModuleID'] == course_code.strip() or module['ModuleName'] == course_name.strip():
-                module_exist = True
-            else:
-                module_exist = False
+    
+    # Check for duplicates
+    if any(module['ModuleID'] == course_code or module['ModuleName'] == course_name for module in modules):
+        print("A module with that ModuleID or ModuleName already exists!")
+        return True
+    
 
-        if module_exist:
-            print("A module with that ModuleID or ModuleName already exists!")
-            return
-        else:
-            new_course = {
-                    "ModuleID": course_code.strip(),
-                    "ModuleName": course_name.strip()
-                    }
-            modules.append(new_course)
+    new_course = {"ModuleID": course_code, "ModuleName": course_name}
+    modules.append(new_course)
 
     # Write the updated data back to the CSV file
     try:
@@ -40,9 +39,9 @@ def create_module():
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(modules)
-            print(f"Module created successfully!")
+            print("Module created successfully!")
     except:
-        print(f"An error occurred trying to create module!")
+        print("An error occurred trying to create module!")
 
 
 def update_student_record():
